@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.6
- * Copyright 2014 .my-bb.ir , All Rights Reserved
+ * Copyright 2014 http://my-bb.ir , All Rights Reserved
  *
  * Website: http://my-bb.ir , http://www.iran-spe.com
  *
