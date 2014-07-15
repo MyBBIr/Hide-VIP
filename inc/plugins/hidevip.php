@@ -101,7 +101,7 @@ $plugins->add_hook("parse_message", "hidevip");
 function hidevip($m)
 {
 	global $mybb, $fid, $post, $postrow, $hidevipno;
-	if(isset($hidevipno))
+	if(isset($hidevipno) && $hidevipno == 1)
 	{
 		return $m;
 	}
@@ -159,6 +159,7 @@ function hidevip_postbit($post)
 
 		$post['signature'] = $parser->parse_message($post['signature'], $sig_parser);
 		eval("\$post['signature'] = \"".$templates->get("postbit_signature")."\";");
+		$hidevipno = 0;
 		unset($hidevipno);
 	}
 	return $post;
