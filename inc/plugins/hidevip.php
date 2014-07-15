@@ -100,7 +100,11 @@ function hidevip_deactivate()
 $plugins->add_hook("parse_message", "hidevip");
 function hidevip($m)
 {
-	global $mybb, $fid, $post, $postrow;
+	global $mybb, $fid, $post, $postrow, $hidevipno;
+	if(isset($hidevipno))
+	{
+		return $m;
+	}
 	$forumid = 0;
 	if(isset($fid))
 	{
@@ -126,6 +130,38 @@ function hidevip($m)
 		}
 	}
 	return $m;
+}
+
+$plugins->add_hook("postbit", "hidevip_postbit");
+
+function hidevip_postbit($post)
+{
+	global $mybb, $usergroup, $hidevipno, $templates;
+	$parser = new postParser;
+	if(!empty($post['signature']))
+	{
+		$user = get_user($post['uid']);
+		$post['signature'] = $user['signature'];
+		$hidevipno = 1;
+		$sig_parser = array(
+			"allow_html" => $mybb->settings['sightml'],
+			"allow_mycode" => $mybb->settings['sigmycode'],
+			"allow_smilies" => $mybb->settings['sigsmilies'],
+			"allow_imgcode" => $mybb->settings['sigimgcode'],
+			"me_username" => $post['username'],
+			"filter_badwords" => 1
+		);
+
+		if($usergroup['signofollow'])
+		{
+			$sig_parser['nofollow_on'] = 1;
+		}
+
+		$post['signature'] = $parser->parse_message($post['signature'], $sig_parser);
+		eval("\$post['signature'] = \"".$templates->get("postbit_signature")."\";");
+		unset($hidevipno);
+	}
+	return $post;
 }
 
 ?>
